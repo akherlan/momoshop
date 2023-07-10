@@ -50,5 +50,5 @@ jobs:
           cd data
           bash ../rename.sh
           git add *.json
-          git commit -m "Update data from ${{ github. }}on ${timestamp}" || exit 0
+          git commit -m "Update data from ${{ github.ref_name }} on ${timestamp}" || exit 0
           git push
