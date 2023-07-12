@@ -1,4 +1,4 @@
-name: Palomino
+name: Berrybenka
 on:
   schedule:
     - cron: "30 20 * * *" # at 3.30 UTC+7
@@ -11,14 +11,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          ref: palomino
-
-      - name: Clone Shopify
-        uses: actions/checkout@v3
-        with:
-          repository: akherlan/shopify
-          path: shopify
-          ref: main
+          ref: berrybenka
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -28,19 +21,15 @@ jobs:
       - name: Install module
         run: |
           python -m pip install --upgrade pip
-          pip install -r shopify/requirements.txt
+          pip install -r requirements.txt
 
-      - name: Crawling process
-        run: |
-          python shopify.py -c crawl -i https://palominobag.com palomino.txt
-        
       - name: Scraping process
-        run: python shopify.py -c scrape -i palomino.txt data/palomino.json
+        run: |
+          scrapy crawl berrybenka -o data/berrybenka.json
 
       - name: File checking
         run: |
-          wc -l palomino.txt
-          jq "map(select(.name)) | length" data/palomino.json
+          jq "map(select(.name)) | length" data/berrybenka.json
         
       - name: Commit result
         run: |

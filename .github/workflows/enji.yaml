@@ -1,7 +1,7 @@
 name: Enji
 on:
   schedule:
-    - cron: "30 18 * * *" # at 1.30 UTC+7
+    - cron: "30 20 * * *" # at 3.30 UTC+7
   workflow_dispatch:
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
       - name: Install module
         run: |
           python -m pip install --upgrade pip
-          pip install httpx selectolax
+          pip install -r shopify/requirements.txt
 
       - name: Crawling process
         run: |
