@@ -40,7 +40,7 @@ jobs:
       - name: File checking
         run: |
           wc -l palomino.txt
-          jq "map(select(.name)) | length" data/palomino.json
+          jq "map(select(.product)) | length" data/palomino.json
         
       - name: Commit result
         run: |

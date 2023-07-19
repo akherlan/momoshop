@@ -1,4 +1,4 @@
-name: Enji
+name: Kami
 on:
   schedule:
     - cron: "30 20 * * *" # at 3.30 UTC+7
@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          ref: enji
+          ref: kami
 
       - name: Clone Shopify
         uses: actions/checkout@v3
@@ -32,15 +32,15 @@ jobs:
 
       - name: Crawling process
         run: |
-          python shopify.py -c crawl -i https://enji.co.id enji.txt
+          python shopify.py -c crawl -i https://kamiidea.com kami.txt
         
       - name: Scraping process
-        run: python shopify.py -c scrape -i enji.txt data/enji.json
+        run: python shopify.py -c scrape -i kami.txt data/kami.json
 
       - name: File checking
         run: |
-          wc -l enji.txt
-          jq "map(select(.product)) | length" data/enji.json
+          wc -l kami.txt
+          jq "map(select(.title)) | length" data/kami.json
         
       - name: Commit result
         run: |
