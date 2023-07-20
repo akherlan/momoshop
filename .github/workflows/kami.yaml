@@ -40,7 +40,7 @@ jobs:
       - name: File checking
         run: |
           wc -l kami.txt
-          jq "map(select(.name)) | length" data/kami.json
+          jq "map(select(.title)) | length" data/kami.json
         
       - name: Commit result
         run: |
