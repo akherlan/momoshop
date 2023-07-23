@@ -1,0 +1,55 @@
+name: Shopify
+on:
+  schedule:
+    - cron: "30 20 * * *" # at 3.30 UTC+7
+  workflow_dispatch:
+
+jobs:
+  scraping-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: shopify
+
+      - name: Clone Shopify
+        uses: actions/checkout@v3
+        with:
+          repository: akherlan/shopify
+          path: shopify
+          ref: main
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install module
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r shopify/requirements.txt
+        
+      - name: Scraping process
+        run: |
+          while read url; do
+            python shopify.py -p p.csv -o o.csv $url
+            head -n 1 p.csv > header_products.csv
+            head -n 1 o.csv > header_offers.csv
+            tail -n +2 p.csv >> products.csv
+            tail -n +2 o.csv >> offers.csv
+          done < shop.txt
+          mv products.csv data/products.csv
+          mv offers.csv data/offers.csv
+        
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          timestamp=$(TZ='Asia/Jakarta' date +'%F %H:%M %Z')
+          chmod +x rename.sh
+          cd data
+          bash ../rename.sh
+          git add products*csv offers*csv
+          git commit -m "Update data from ${{ github.ref_name }} on ${timestamp}" || exit 0
+          git push
