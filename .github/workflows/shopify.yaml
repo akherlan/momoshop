@@ -33,7 +33,7 @@ jobs:
       - name: Scraping process
         run: |
           while read url; do
-            python shopify.py -p p.csv -o o.csv $url
+            python shopify/shopify.py -p p.csv -o o.csv $url
             head -n 1 p.csv > header_products.csv
             head -n 1 o.csv > header_offers.csv
             tail -n +2 p.csv >> products.csv
