@@ -38,7 +38,7 @@ jobs:
             head -n 1 o.csv > header_offers.csv
             tail -n +2 p.csv >> products.csv
             tail -n +2 o.csv >> offers.csv
-          done < shop.txt
+          done < shopify.txt
           mv products.csv data/products.csv
           mv offers.csv data/offers.csv
         
