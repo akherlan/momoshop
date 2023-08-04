@@ -7,7 +7,7 @@ import glob
 
 
 def import_data(paths, header=None):
-    data = [pd.read_csv(file, header=header) for file in fin]
+    data = [pd.read_csv(file, header=header) for file in paths]
     fields_len = len(data[0].columns)
     if not sum([len(p.columns) != fields_len for p in data]):
         data = pd.concat(data, ignore_index=True)
