@@ -25,11 +25,13 @@ jobs:
 
       - name: Scraping process
         run: |
-          scrapy crawl berrybenka -o data/berrybenka.json
+          scrapy crawl berrybenka -o data/berrybenka.csv
 
       - name: File checking
         run: |
-          jq "map(select(.name)) | length" data/berrybenka.json
+          # jq "map(select(.name)) | length" data/berrybenka.json
+          wc -l data/berrybenka.csv
+          head -n 10 data/berrybenka.csv
         
       - name: Commit result
         run: |
