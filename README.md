@@ -30,4 +30,3 @@ Data collecting is proceed using Scrapy's spider/crawler, and various scraping t
 - Shopify scraper | [repo](https://github.com/akherlan/shopify)
 - Woocommerce scraper | [repo](https://github.com/akherlan/woocommerce)
 - Shopee API wrapper | [repo](https://github.com/akherlan/onlineshop)
-
