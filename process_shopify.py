@@ -42,7 +42,7 @@ def import_data(paths: list):
 
 def extract_dataset(data, name: str):
     if name not in ("product", "variant", "price"):
-        return "Error: invalid name"
+        raise ValueError("Error: invalid name")
     if name == "product":
         fields_name = [
             "product_id",
@@ -83,21 +83,47 @@ def extract_dataset(data, name: str):
     )
 
 
-if __name__ == "__main__":
+def append_dataset(dataset, master: str, dup=False, dup_name=None, fmt="parquet"):
+    if fmt == "parquet":
+        engine = "fastparquet"
+        master_dataset = pd.read_parquet(master, engine=engine)
+        if dataset.columns.to_list() != master_dataset.columns.to_list():
+            raise Exception("column is different")
+        dataset = pd.concat([master_dataset, dataset]).drop_duplicates(
+            ignore_index=True
+        )
+        if not dup:
+            dup_name = master
+        else:
+            if dup_name is None:
+                dup_name = f"{master.replace('.parquet', '')}_copy.parquet"
+        dataset.to_parquet(dup_name, engine=engine)
+        print(f"save data to {dup_name}")
+    else:
+        raise Exception("not parquet?")
+
+
+def main():
     product_paths = glob.glob("data/products_[!a-z]*.csv")
     offer_paths = glob.glob("data/offers_[!a-z]*.csv")
 
+    # Load
     data_products = import_data(product_paths)
     data_pricing = import_data(offer_paths)
 
+    # Transform
     products = extract_dataset(data_products, name="product")
     variants = extract_dataset(data_products, name="variant")
     prices = extract_dataset(data_pricing, name="price")
 
-    products.to_csv("data/products_concat.csv", index=False)
-    variants.to_csv("data/variants_concat.csv", index=False)
-    prices.to_csv("data/prices_concat.csv", index=False)
+    append_dataset(products, "data/products.parquet")
+    append_dataset(variants, "data/variants.parquet")
+    append_dataset(prices, "data/prices.parquet")
 
     for f in product_paths + offer_paths:
         os.remove(f)
         print(f"delete {f}")
+
+
+if __name__ == "__main__":
+    main()
