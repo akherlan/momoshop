@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
-import pandas as pd
-
-import os
 import glob
+import os
 
-from extractor import import_data, extract_dataset
+from extractor import import_data, extract_dataset, append_dataset
 
 
-if __name__ == "__main__":
+def main():
     paths = glob.glob("data/gaudi_[0-9]*.csv")
     data = import_data(paths, header="infer")
 
@@ -19,10 +17,14 @@ if __name__ == "__main__":
     variants = extract_dataset(data, name="variant")
     prices = extract_dataset(data, name="price")
 
-    products.to_csv("data/products_gaudi_concat.csv", index=False)
-    variants.to_csv("data/variants_gaudi_concat.csv", index=False)
-    prices.to_csv("data/prices_gaudi_concat.csv", index=False)
+    append_dataset(products, "data/products.parquet")
+    append_dataset(variants, "data/variants.parquet")
+    append_dataset(prices, "data/prices.parquet")
 
     for f in paths:
         os.remove(f)
         print(f"delete {f}")
+
+
+if __name__ == "__main__":
+    main()
