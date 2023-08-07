@@ -80,6 +80,7 @@ def extract_dataset(data, name: str):
         .sort_values(fields_sort, ignore_index=True)
     )
 
+
 def append_dataset(dataset, master: str, dup=False, dup_name=None, fmt="parquet"):
     if fmt == "parquet":
         engine = "fastparquet"
