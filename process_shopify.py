@@ -15,6 +15,7 @@ def main():
     data_pricing = import_data(offer_paths)
 
     # Transform
+    print("Processing data...")
     products = extract_dataset(data_products, name="product")
     variants = extract_dataset(data_products, name="variant")
     prices = extract_dataset(data_pricing, name="price")
@@ -25,7 +26,7 @@ def main():
 
     for f in product_paths + offer_paths:
         os.remove(f)
-        print(f"delete {f}")
+        print(f"Delete {f}")
 
 
 if __name__ == "__main__":

@@ -13,6 +13,8 @@ def main():
     if "date_published" not in data.columns.to_list():
         data["date_published"] = None
 
+    # Transform
+    print("Processing data...")
     products = extract_dataset(data, name="product")
     variants = extract_dataset(data, name="variant")
     prices = extract_dataset(data, name="price")
@@ -23,7 +25,7 @@ def main():
 
     for f in paths:
         os.remove(f)
-        print(f"delete {f}")
+        print(f"Delete {f}")
 
 
 if __name__ == "__main__":

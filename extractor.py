@@ -96,6 +96,6 @@ def append_dataset(dataset, master: str, dup=False, dup_name=None, fmt="parquet"
             if dup_name is None:
                 dup_name = f"{master.replace('.parquet', '')}_copy.parquet"
         dataset.to_parquet(dup_name, engine=engine)
-        print(f"save data to {dup_name}")
+        print(f"Save data to {dup_name}")
     else:
         raise Exception("not parquet?")
