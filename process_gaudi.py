@@ -3,15 +3,14 @@
 import glob
 import os
 
-from extractor import import_data, extract_dataset, append_dataset
+from extractor import import_data, extract_dataset, append_dataset, append_empty_columns
 
 
 def main():
+    # Load
     paths = glob.glob("data/gaudi_[0-9]*.csv")
     data = import_data(paths, header="infer")
-
-    if "date_published" not in data.columns.to_list():
-        data["date_published"] = None
+    data = append_empty_columns(data)
 
     # Transform
     print("Processing data...")

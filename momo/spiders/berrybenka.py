@@ -1,5 +1,5 @@
 import scrapy
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 from datetime import datetime
 import pytz
 import re
@@ -7,6 +7,7 @@ import re
 
 class BerrybenkaSpider(scrapy.Spider):
     name = "berrybenka"
+    brand = "Berrybenka"
     start_urls = ["https://berrybenka.com/"]
     navs = []
 
@@ -46,16 +47,25 @@ class BerrybenkaSpider(scrapy.Spider):
             return string.replace("IDR", "").replace(".", "").strip()
         def extract_link(string):
             return string.split("?")[0]
+        def extract_slug(string):
+            return urlparse(extract_link(string)).path
+        def extract_source(string):
+            return urlparse(extract_link(string)).netloc
+        def extract_product_id(string):
+            return list(filter(lambda x: x.isdigit(), extract_link(string).split("/")))[0]
         local_date_now = pytz.timezone(self.local_tz).localize(datetime.now())
         yield {
             "name": response.css(".prod-title h1::text").get(),
             "price": extract_price(response.css(".price::text").get()),
-            "color": response.css("#filter-color label::attr(data-original-title)").extract(),
+            "variant_name": response.css("#filter-color label::attr(data-original-title)").extract(), # color
             "description": response.css("#product_description::text").get(),
             "category": response.css(".tag li::text").get(),
             "tag": response.css(".tag li a::text").get(),
-            "gallery": response.css("ul#images-selected li img::attr(src)").extract(),
-            "link": extract_link(response.url),
+            "image": response.css("ul#images-selected li img::attr(src)").extract(),
+            "brand": self.brand,
+            "slug": extract_slug(str(response.url)),
+            "source": extract_source(str(response.url)),
+            "product_id": extract_product_id(str(response.url)),
             "referer": response.request.headers.get('referer', None).decode("utf-8"),
-            "acquisition": local_date_now.strftime("%Y-%m-%dT%H:%M%z"),
+            "date_acquisition": local_date_now.strftime("%Y-%m-%dT%H:%M%z"),
         }
