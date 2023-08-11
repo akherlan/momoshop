@@ -9,21 +9,9 @@ def import_data(paths, header=None, fmt="csv"):
     if fmt == "json":
         data = [pd.read_json(file) for file in paths]
         data = pd.concat(data, ignore_index=True)
-        data = data.explode("color", ignore_index=True).explode(
-            "gallery", ignore_index=True
+        data = data.explode("variant_name", ignore_index=True).explode(
+            "image", ignore_index=True
         )  # berrybenka
-        data.columns = [
-            "name",
-            "price",
-            "variant_name",
-            "description",
-            "category",
-            "tag",
-            "image",
-            "link",
-            "referer",
-            "date_acquisition",
-        ]  # berrybenka
         return data
     data = [pd.read_csv(file, header=header) for file in paths]
     fields_len = len(data[0].columns)
