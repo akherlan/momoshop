@@ -90,7 +90,9 @@ def append_dataset(dataset, master: str, dup=False, dup_name=None, fmt="parquet"
         else:
             master_dataset = pd.read_parquet(master, engine=engine)
             if dataset.columns.to_list() != master_dataset.columns.to_list():
-                raise Exception("column is different")
+                from_rows = dataset.columns.to_list()
+                into_rows = master_dataset.columns.to_list()
+                raise Exception(f"column is different, {from_rows} into {into_rows}")
             dataset = pd.concat([master_dataset, dataset]).drop_duplicates(
                 ignore_index=True
             )
