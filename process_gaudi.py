@@ -3,7 +3,7 @@
 import glob
 import os
 
-from extractor import import_data, extract_dataset, append_dataset
+from extractor import import_data, extract_dataset, append_dataset, append_empty_columns
 
 
 def main():
