@@ -18,19 +18,23 @@ The comprehensive approach ensures that data collection processes are diverse an
 
 By leveraging pricing history and comprehending retailers' discount strategies, consumers can shop smarter, making informed decisions, and boosting confidence in navigating the market for an improved shopping experience overall.
 
-Role model:
+### Development
 
-- <https://www.jellibeans.com>
-- <https://www.shopstyle.com>
+**Tools**
 
-Current development workflow:
-
-![development workflow](img/development.png)
-
-### Tools
-
-Data collecting is proceed using Scrapy's spider/crawler, and various scraping tool as follows:
+Data collecting is proceed using Scrapy's spider/crawler (Scrapy project momo), and various scraping tool as follows:
 
 - Shopify scraper | [repo](https://github.com/akherlan/shopify)
 - Woocommerce scraper | [repo](https://github.com/akherlan/woocommerce)
 - Shopee API wrapper | [repo](https://github.com/akherlan/onlineshop)
+
+**Role model**
+
+- <https://www.jellibeans.com>
+- <https://www.shopstyle.com>
+
+**Current development workflow**
+
+![development workflow](img/development.png)
+
+
