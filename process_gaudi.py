@@ -3,16 +3,17 @@
 import glob
 import os
 
-from extractor import import_data, extract_dataset, append_dataset
+from extractor import import_data, extract_dataset, append_dataset, append_empty_columns
 
 
 def main():
+    # Load
     paths = glob.glob("data/gaudi_[0-9]*.csv")
     data = import_data(paths, header="infer")
+    data = append_empty_columns(data)
 
-    if "date_published" not in data.columns.to_list():
-        data["date_published"] = None
-
+    # Transform
+    print("Processing data...")
     products = extract_dataset(data, name="product")
     variants = extract_dataset(data, name="variant")
     prices = extract_dataset(data, name="price")
@@ -23,7 +24,7 @@ def main():
 
     for f in paths:
         os.remove(f)
-        print(f"delete {f}")
+        print(f"Delete {f}")
 
 
 if __name__ == "__main__":

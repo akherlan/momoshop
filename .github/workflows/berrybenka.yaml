@@ -30,6 +30,8 @@ jobs:
       - name: File checking
         run: |
           jq "map(select(.name)) | length" data/berrybenka.json
+          # wc -l data/berrybenka.csv
+          # head -n 10 data/berrybenka.csv
         
       - name: Commit result
         run: |

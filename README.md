@@ -23,6 +23,10 @@ Role model:
 - <https://www.jellibeans.com>
 - <https://www.shopstyle.com>
 
+Current development workflow:
+
+![development workflow](img/development.png)
+
 ### Tools
 
 Data collecting is proceed using Scrapy's spider/crawler, and various scraping tool as follows:
