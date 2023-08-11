@@ -7,11 +7,10 @@ from extractor import import_data, extract_dataset, append_dataset
 
 
 def main():
+    # Load
     paths = glob.glob("data/gaudi_[0-9]*.csv")
     data = import_data(paths, header="infer")
-
-    if "date_published" not in data.columns.to_list():
-        data["date_published"] = None
+    data = append_empty_columns(data)
 
     products = extract_dataset(data, name="product")
     variants = extract_dataset(data, name="variant")
@@ -23,7 +22,7 @@ def main():
 
     for f in paths:
         os.remove(f)
-        print(f"delete {f}")
+        print(f"Delete {f}")
 
 
 if __name__ == "__main__":
