@@ -18,9 +18,13 @@ data: process
 process: $(scraper) $(links)
 	for url in $$(cat ${links} | grep .); do \
 	python ${scraper} -p p.csv -o o.csv -t $$url; \
-	tail -n +2 p.csv >> products.csv; \
-	tail -n +2 o.csv >> offers.csv; \
-	done
+	tail -n +2 p.csv >> products0.csv; \
+	tail -n +2 o.csv >> offers0.csv; \
+	done; \
+	head -n 1 p.csv > pfields.csv; \
+	head -n 1 o.csv > ofields.csv; \
+	cat pfields.csv products0.csv > products.csv; \
+	cat ofields.csv offers0.csv > offers.csv
 
 $(scraper):
 	[ -f ${scraper} ] && echo "Using ${scraper}" || exit 1
