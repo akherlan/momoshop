@@ -10,6 +10,7 @@
                 "brand",
                 "category",
                 "tag",
+                "description",
                 "date_published",
                 "slug"
             ],
@@ -33,7 +34,6 @@
                 "variant_id",
                 "sku",
                 "price",
-                "is_instock",
                 "date_acquisition",
                 "source"
             ],
@@ -51,6 +51,36 @@
                 "sku",
                 "variant_id",
                 "date_acquisition",
+                "source"
+            ]
+        },
+        "inventory":
+        {
+            "name":
+            [
+                "product_id",
+                "variant_id",
+                "sku",
+                "is_instock",
+                "quantity",
+                "condition",
+                "modified_at",
+                "source"
+            ],
+            "unique":
+            [
+                "product_id",
+                "variant_id",
+                "sku",
+                "modified_at",
+                "source"
+            ],
+            "sort":
+            [
+                "product_id",
+                "sku",
+                "variant_id",
+                "modified_at",
                 "source"
             ]
         },
