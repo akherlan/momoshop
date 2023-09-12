@@ -70,19 +70,59 @@ class DbClient:
                 try:
                     res, met = self.__insert_row(table_name="product", pk="product_id", item=item, conflict=conflict)
                     for i in res.get("data"):
-                        logger.info(f'{met.upper()} {i.get("product_id")} {i.get("brand")} {i.get("name")}')
+                        logger.info(f'{met.upper()} product {i.get("product_id")} {i.get("brand")} {i.get("name")}')
                         # logger.info(i)
                 except (ReadTimeout, ConnectTimeout, ConnectError) as e:
                     logger.error(f"{str(e)} at data {n}")
                     break
             logger.info("Add product done!")
 
+    def add_price(self, data:list, conflict:str = "update") -> None:
+        if conflict in ("update", "abort"):
+            for n, item in enumerate(data):
+                try:
+                    res, met = self.__insert_row(table_name="price_history", pk="price_id", item=item, conflict=conflict)
+                    for i in res.get("data"):
+                        logger.info(f'{met.upper()} price {i.get("price_id")} on {i.get("date_acquisition")}')
+                        # logger.info(f'{met.upper()} price {i}')
+                except (ReadTimeout, ConnectTimeout, ConnectError) as e:
+                    logger.error(f"{str(e)} at data {n}")
+                    break
+            logger.info("Add pricing done!")
 
-def main() -> None:
-    with open("data/products.json") as f:
-        product = json.load(f)
-        logger.info(f"LEN: {len(product)}")
-        product = product[26995:]
+    def add_inventory(self, data:list, conflict:str = "update") -> None:
+        if conflict in ("update", "abort"):
+            for n, item in enumerate(data):
+                try:
+                    res, met = self.__insert_row(table_name="inventory", pk="inventory_id", item=item, conflict=conflict)
+                    for i in res.get("data"):
+                        logger.info(f'{met.upper()} inventory {i.get("inventory_id")} in stock: {i.get("is_instock")} ({i.get("quantity")})')
+                except (ReadTimeout, ConnectTimeout, ConnectError) as e:
+                    logger.error(f"{str(e)} at data {n}")
+                    break
+            logger.info("Add inventory done!")
+
+    def add_variant(self, data:list, conflict:str = "update") -> None:
+        if conflict in ("update", "abort"):
+            for n, item in enumerate(data):
+                try:
+                    res, met = self.__insert_row(table_name="variant", pk="variant_id", item=item, conflict=conflict)
+                    for i in res.get("data"):
+                        logger.info(f'{met.upper()} variant {i.get("variant_id")} {i.get("name")} {i.get("value")}')
+                except (ReadTimeout, ConnectTimeout, ConnectError) as e:
+                    logger.error(f"{str(e)} at data {n}")
+                    break
+            logger.info("Add variant done!")
+
+
+def main(file:str, table_name:str, start:int=None, stop:int=None) -> None:
+    with open(file) as f:
+        data = json.load(f)
+        datalen = len(data)
+        logger.info(f"len of data: {datalen}")
+        if start or stop:
+            logger.info(f"sliced on {start} to {stop}")
+            data = data[slice(start, stop, 1)]
     load_dotenv()
     supabase = DbClient(
         url=os.environ.get("SUPABASE_URL"),
@@ -95,8 +135,18 @@ def main() -> None:
     # )
     auth = True
     if auth:
-        supabase.add_product(data=product)
+        if table_name == "product":
+            supabase.add_product(data)
+        elif table_name == "price_history":
+            supabase.add_price(data, conflict="abort")
+        elif table_name == "inventory":
+            supabase.add_inventory(data)
+        elif table_name == "variant":
+            supabase.add_variant(data, conflict="abort")
+        else:
+            logger.warning(f"cannot found {table_name} in database")
+    logger.info(f"run index {start} to {stop} from total {datalen}")
 
 
 if __name__ == '__main__':
-    main() 
+    main(file="data/gaudi_prices.json", table_name="price_history")
