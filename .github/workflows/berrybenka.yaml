@@ -7,6 +7,9 @@ on:
 jobs:
   scraping-job:
     runs-on: ubuntu-latest
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      MONGO_DB: ${{ secrets.MONGO_DB }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
