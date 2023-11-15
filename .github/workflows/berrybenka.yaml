@@ -10,13 +10,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        with:
-          ref: berrybenka
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.10.12
 
       - name: Install module
         run: |
@@ -25,26 +23,5 @@ jobs:
 
       - name: Scraping process
         run: |
-          scrapy crawl berrybenka -o data/berrybenka.json
-
-      - name: File checking
-        run: |
-          jq "map(select(.name)) | length" data/berrybenka.json
-          # wc -l data/berrybenka.csv
-          # head -n 10 data/berrybenka.csv
-        
-      - name: Commit result
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          timestamp=$(TZ='Asia/Jakarta' date +'%F %H:%M %Z')
-          cd data
-          pattern_inc="berrybenka.*\.(csv|json)"
-          pattern_exc="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-          for file in $(ls | grep -E "${pattern_inc}" | grep -Ev "${pattern_exc}"); do
-            file_rename_to=${file%.*}_$(date +"%FT%H:%M%z").${file##*.}
-            mv ${file} ${file_rename_to}
-          done
-          git add *.json
-          git commit -m "Update data from ${{ github.ref_name }} on ${timestamp}" || exit 0
-          git push
+          scrapy crawl berrybenka -L WARNING -o data/berrybenka.csv
+          wc -l data/berrybenka.csv
