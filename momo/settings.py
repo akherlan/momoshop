@@ -1,3 +1,4 @@
+import os
 # Scrapy settings for momo project
 #
 # For simplicity, this file contains only settings considered important or
@@ -16,18 +17,17 @@ NEWSPIDER_MODULE = "momo.spiders"
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "momo (+http://www.yourdomain.com)"
 
-# Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 10
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 #DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
+CONCURRENT_REQUESTS_PER_DOMAIN = 10
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
@@ -61,10 +61,15 @@ ROBOTSTXT_OBEY = False
 #}
 
 # Configure item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "momo.pipelines.MomoPipeline": 300,
-#}
+
+ITEM_PIPELINES = {
+    "momo.pipelines.EmptyPipeline": 300,
+    "momo.pipelines.DuplicatesPipeline": 500,
+    "momo.pipelines.MongoPipeline": 800,
+}
+
+MONGO_URI = os.getenv("MONGO_URI")
+MONGO_DB = os.getenv("MONGO_DB")
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
