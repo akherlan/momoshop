@@ -6,9 +6,7 @@
 
 # useful for handling different item types with a single interface
 import pymongo
-#from scrapy.conf import settings
 from scrapy.exceptions import DropItem
-#from itemadapter import ItemAdapter
 
 
 class EmptyPipeline(object):
