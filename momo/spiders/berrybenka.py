@@ -1,6 +1,7 @@
 import scrapy
 from urllib.parse import urljoin, urlparse
 from datetime import datetime
+from momo.items import BerrybenkaItem
 import pytz
 import re
 
@@ -43,6 +44,7 @@ class BerrybenkaSpider(scrapy.Spider):
             yield scrapy.Request(link, callback=self.parse_item)
 
     def parse_item(self, response):
+        item = BerrybenkaItem()
         def extract_price(string):
             return string.replace("IDR", "").replace(".", "").strip()
         def extract_link(string):
@@ -54,18 +56,17 @@ class BerrybenkaSpider(scrapy.Spider):
         def extract_product_id(string):
             return list(filter(lambda x: x.isdigit(), extract_link(string).split("/")))[0]
         local_date_now = pytz.timezone(self.local_tz).localize(datetime.now())
-        yield {
-            "name": response.css(".prod-title h1::text").get(),
-            "price": extract_price(response.css(".price::text").get()),
-            "variant_name": response.css("#filter-color label::attr(data-original-title)").extract(), # color
-            "description": response.css("#product_description::text").get(),
-            "category": response.css(".tag li::text").get(),
-            "tag": response.css(".tag li a::text").get(),
-            "image": response.css("ul#images-selected li img::attr(src)").extract(),
-            "brand": self.brand,
-            "slug": extract_slug(str(response.url)),
-            "source": extract_source(str(response.url)),
-            "product_id": extract_product_id(str(response.url)),
-            "referer": response.request.headers.get('referer', None).decode("utf-8"),
-            "date_acquisition": local_date_now.strftime("%Y-%m-%dT%H:%M%z"),
-        }
+        item["name"] = response.css(".prod-title h1::text").get()
+        item["price"] = extract_price(response.css(".price::text").get())
+        item["variant_name"] = response.css("#filter-color label::attr(data-original-title)").extract() # color
+        item["description"] = response.css("#product_description::text").get()
+        item["category"] = response.css(".tag li::text").get()
+        item["tag"] = response.css(".tag li a::text").get()
+        item["image"] = response.css("ul#images-selected li img::attr(src)").extract()
+        item["brand"] = self.brand
+        item["slug"] = extract_slug(str(response.url))
+        item["source"] = extract_source(str(response.url))
+        item["product_id"] = extract_product_id(str(response.url))
+        item["referer"] = response.request.headers.get('referer', None).decode("utf-8")
+        item["date_acquisition"] = local_date_now.strftime("%Y-%m-%dT%H:%M%z")
+        yield item
