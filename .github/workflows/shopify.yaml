@@ -1,7 +1,7 @@
 name: Shopify
 on:
-  schedule:
-    - cron: "30 20 * * *" # at 3.30 UTC+7
+  #schedule:
+  #  - cron: "30 20 * * *" # at 3.30 UTC+7
   workflow_dispatch:
 
 jobs:
